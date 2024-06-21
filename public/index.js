@@ -8,6 +8,7 @@ $(document).ready(()=>{
   socket.emit('get online users');
   //Each user should be in the general channel by default.
   socket.emit('user changed channel', "General");
+  socket.emit('get all channels');
 
   //Users can change the channel by clicking on its name.
   $(document).on('click', '.channel', (e)=>{
@@ -83,6 +84,15 @@ $(document).ready(()=>{
   // Add the new channel to the channels list (Fires for all clients)
   socket.on('new channel', (newChannel) => {
     $('.channels').append(`<div class="channel">${newChannel}</div>`);
+  });
+
+  //Receive all channels from server on connection
+  socket.on('get channels', (channels) => {
+    for(channel in channels) {
+      if(channel != "General") {
+        $('.channels').append(`<div class="channel">${channel}</div>`);
+      }
+    }
   });
 
   // Make the channel joined the current channel. Then load the messages.
